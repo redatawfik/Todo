@@ -2,16 +2,21 @@ package com.todo.notification;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.todo.Constants;
+import com.todo.MainActivity;
 import com.todo.R;
 
 import static com.todo.Constants.CHANNEL_ID;
+import static com.todo.Constants.NOTIFICATION_ID;
 
 public class NotificationUtils {
 
@@ -37,15 +42,25 @@ public class NotificationUtils {
             }
         }
 
+        // Create an Intent for the activity you want to start
+        Intent resultIntent = new Intent(context, MainActivity.class);
+        // Create the TaskStackBuilder and add the intent, which inflates the back stack
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+        stackBuilder.addNextIntentWithParentStack(resultIntent);
+        // Get the PendingIntent containing the entire back stack
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
         // Create the notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setContentTitle(Constants.NOTIFICATION_TITLE)
                 .setContentText(message)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setVibrate(new long[0]);
+                .setVibrate(new long[0])
+                .setContentIntent(resultPendingIntent);
 
         // Show the notification
-        NotificationManagerCompat.from(context).notify(Constants.NOTIFICATION_ID, builder.build());
+        NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, builder.build());
     }
 }
