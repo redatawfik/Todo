@@ -15,27 +15,33 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.todo.R;
 import com.todo.data.Task;
+import com.todo.databinding.FragmentTasksBinding;
 
 import java.util.Collections;
 
 public class TasksFragment extends Fragment implements TaskItemCallback {
 
     private TasksViewModel mTasksViewModel;
+    private FragmentTasksBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
+
+        binding = FragmentTasksBinding.inflate(getLayoutInflater());
+
         mTasksViewModel =
                 new ViewModelProvider(this).get(TasksViewModel.class);
 
-        View root = inflater.inflate(R.layout.fragment_tasks, container, false);
+        //View root = inflater.inflate(R.layout.fragment_tasks, container, false);
 
-        RecyclerView recyclerView = root.findViewById(R.id.tasks_recyclerView);
+        RecyclerView recyclerView = binding.tasksRecyclerView;
         final TaskAdapter adapter = new TaskAdapter(new TaskAdapter.TaskDiff(), this);
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         mTasksViewModel.getAllTasks().observe(getViewLifecycleOwner(), tasks -> {
             Toast.makeText(getContext(), tasks != null ? String.valueOf(tasks.size()) : "empty list", Toast.LENGTH_SHORT).show();
@@ -45,7 +51,7 @@ public class TasksFragment extends Fragment implements TaskItemCallback {
 
             adapter.submitList(tasks);
         });
-        return root;
+        return binding.getRoot();
     }
 
     @Override
@@ -57,9 +63,8 @@ public class TasksFragment extends Fragment implements TaskItemCallback {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_clear_completed_tasks) {
-
             mTasksViewModel.deleteCompletedTasks();
-
+            Snackbar.make(binding.getRoot(), "Removed completed tasks", Snackbar.LENGTH_LONG).show();
             return true;
         }
 
@@ -67,9 +72,10 @@ public class TasksFragment extends Fragment implements TaskItemCallback {
     }
 
     @Override
-    public void checkBoxStatusChanged(boolean value, Task task) {
-        task.setCompleted(value);
+    public void checkBoxStatusChanged(boolean completed, Task task) {
+        task.setCompleted(completed);
         mTasksViewModel.updateTask(task);
+        Snackbar.make(binding.getRoot(), "Task: " + task.getTitle() +
+                (completed ? " completed" : " not completed"), Snackbar.LENGTH_LONG).show();
     }
-
 }
