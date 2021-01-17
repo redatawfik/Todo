@@ -12,8 +12,7 @@
         <activity
             android:name=".settings.SettingsActivity"
             android:label="Settings"
-            android:parentActivityName=".MainActivity">
-        </activity>
+            android:parentActivityName=".MainActivity"></activity>
 
         <activity
             android:name=".MainActivity"

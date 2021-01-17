@@ -16,8 +16,11 @@ import com.todo.data.Task;
 
 public class TaskAdapter extends ListAdapter<Task, TaskAdapter.ViewHolder> {
 
-    protected TaskAdapter(@NonNull DiffUtil.ItemCallback<Task> diffCallback) {
+    private TaskItemCallback itemCallback;
+
+    protected TaskAdapter(@NonNull DiffUtil.ItemCallback<Task> diffCallback, TaskItemCallback itemCallback) {
         super(diffCallback);
+        this.itemCallback = itemCallback;
     }
 
     @NonNull
@@ -29,7 +32,7 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Task task = getItem(position);
-        holder.bind(task);
+        holder.bind(task, itemCallback);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -42,23 +45,30 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.ViewHolder> {
             title = itemView.findViewById(R.id.title);
             dueDate = itemView.findViewById(R.id.due_date);
             priority = itemView.findViewById(R.id.priority);
-        }
 
-        public void bind(Task task) {
-            title.setText(task.getTitle());
-            if(task.getDueDate() != null) {
-                dueDate.setText(task.getDueDate().toString());
-            }else {
-                dueDate.setText("No date");
-            }
+            title.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
-            priority.setText(String.valueOf(task.getPriority()));
+            });
         }
 
         static ViewHolder create(ViewGroup parent) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.task_recyclerview_item, parent, false);
             return new ViewHolder(view);
+        }
+
+        public void bind(Task task, TaskItemCallback itemCallback) {
+            title.setText(task.getTitle());
+            title.setChecked(task.isCompleted());
+            if (task.getDueDate() != null) {
+                dueDate.setText(task.getDueDate().toString());
+            } else {
+                dueDate.setText("No date");
+            }
+
+            priority.setText(String.valueOf(task.getPriority()));
+            title.setOnCheckedChangeListener((buttonView, isChecked) ->
+                    itemCallback.checkBoxStatusChanged(isChecked, task));
         }
     }
 

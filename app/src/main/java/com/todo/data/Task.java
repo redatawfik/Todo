@@ -23,10 +23,13 @@ public class Task implements Comparable<Task> {
 
     private int priority;
 
-    public Task(String title, Date dueDate, int priority) {
+    private boolean completed;
+
+    public Task(String title, Date dueDate, int priority, boolean completed) {
         this.title = title;
         this.dueDate = dueDate;
         this.priority = priority;
+        this.completed = completed;
     }
 
     public int getUid() {
@@ -61,16 +64,23 @@ public class Task implements Comparable<Task> {
         this.priority = priority;
     }
 
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
+    }
+
     @Override
     public int compareTo(Task task2) {
-        if(MainActivity.getSortOrder() == MainActivity.SortByEnum.DUE_DATE) {
-            if(dueDate == null) return 1;
-            if(task2.getDueDate() == null) return -1;
+        if (MainActivity.getSortOrder() == MainActivity.SortByEnum.DUE_DATE) {
+            if (dueDate == null) return 1;
+            if (task2.getDueDate() == null) return -1;
 
             return dueDate.compareTo(task2.getDueDate());
-        }else {
+        } else {
             return priority - task2.getPriority();
         }
-
     }
 }

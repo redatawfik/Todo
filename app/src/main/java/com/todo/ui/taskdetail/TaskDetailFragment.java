@@ -61,7 +61,7 @@ public class TaskDetailFragment extends Fragment {
             mDate.setMinutes(minute);
         }
 
-        Task task = new Task(title, mDate, priority);
+        Task task = new Task(title, mDate, priority, false);
         mTaskDetailViewModel.insertTask(task);
 
         Navigation.findNavController(binding.getRoot()).navigate(R.id.nav_tasks);

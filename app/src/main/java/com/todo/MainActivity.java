@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,9 +24,13 @@ import com.todo.settings.SettingsActivity;
 
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
+    private static SortByEnum sortByPref;
     private AppBarConfiguration mAppBarConfiguration;
     private SharedPreferences preferences;
-    private static SortByEnum sortByPref;
+
+    public static SortByEnum getSortOrder() {
+        return sortByPref;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_tasks, R.id.nav_task_detail, R.id.nav_slideshow)
+                R.id.nav_tasks, R.id.nav_task_detail)
                 .setDrawerLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
@@ -64,11 +67,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         initSOrtByPref();
     }
 
-    public enum SortByEnum {
-        DUE_DATE,
-        PRIORITY
-    }
-
     private void initSOrtByPref() {
         String pref = preferences.getString(SettingsActivity.KEY_PREF_SORT_BY, "Priority");
         if (pref.equals(getString(R.string.priority))) {
@@ -76,10 +74,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         } else {
             sortByPref = SortByEnum.DUE_DATE;
         }
-    }
-
-    public static SortByEnum getSortOrder() {
-        return sortByPref;
     }
 
     @Override
@@ -104,6 +98,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
             startActivity(intent);
             return true;
+        } else if (id == R.id.action_clear_completed_tasks) {
+            return false;
         }
 
         return super.onOptionsItemSelected(item);
@@ -114,5 +110,10 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         if (key.equals(SettingsActivity.KEY_PREF_SORT_BY)) {
             initSOrtByPref();
         }
+    }
+
+    public enum SortByEnum {
+        DUE_DATE,
+        PRIORITY
     }
 }

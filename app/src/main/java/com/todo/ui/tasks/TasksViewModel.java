@@ -12,8 +12,8 @@ import java.util.List;
 
 public class TasksViewModel extends AndroidViewModel {
 
-    private TaskRepository mRepository;
     private final LiveData<List<Task>> mAllTasks;
+    private TaskRepository mRepository;
 
     public TasksViewModel(Application application) {
         super(application);
@@ -27,5 +27,13 @@ public class TasksViewModel extends AndroidViewModel {
 
     public void insertTask(Task task) {
         mRepository.insertTask(task);
+    }
+
+    public void deleteCompletedTasks() {
+        mRepository.deleteCompletedTasks();
+    }
+
+    public void updateTask(Task task) {
+        mRepository.updateTask(task);
     }
 }

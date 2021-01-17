@@ -15,4 +15,5 @@
     <string name="due_date">Due date</string>
     <string name="sort_by">Sort by</string>
     <string name="priority">Priority</string>
+    <string name="action_clear_completed_tasks">Clear completed</string>
 </resources>

@@ -36,4 +36,8 @@ public class TaskRepository {
     public void deleteTask(Task task) {
         TaskRoomDatabase.databaseWriteExecutor.execute(() -> mTaskDao.deleteTask(task));
     }
+
+    public void deleteCompletedTasks() {
+        TaskRoomDatabase.databaseWriteExecutor.execute(() -> mTaskDao.deleteCompletedTasks());
+    }
 }

@@ -12,11 +12,9 @@ import java.util.concurrent.Executors;
 @Database(entities = {Task.class}, version = 1, exportSchema = false)
 public abstract class TaskRoomDatabase extends RoomDatabase {
 
-    public abstract TaskDao taskDao();
-
-    private static volatile TaskRoomDatabase INSTANCE;
     private static final int NUMBER_OF_THREADS = 4;
     static final ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
+    private static volatile TaskRoomDatabase INSTANCE;
 
     static TaskRoomDatabase getInstance(final Context context) {
         if (INSTANCE == null) {
@@ -31,4 +29,6 @@ public abstract class TaskRoomDatabase extends RoomDatabase {
         }
         return INSTANCE;
     }
+
+    public abstract TaskDao taskDao();
 }
