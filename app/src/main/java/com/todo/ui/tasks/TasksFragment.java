@@ -13,9 +13,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.todo.R;
-import com.todo.data.Task;
 
-import java.util.Date;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 public class TasksFragment extends Fragment {
 
@@ -35,6 +36,9 @@ public class TasksFragment extends Fragment {
 
         mTasksViewModel.getAllTasks().observe(getViewLifecycleOwner(), tasks -> {
             Toast.makeText(getContext(), tasks != null ? String.valueOf(tasks.size()) : "empty list", Toast.LENGTH_SHORT).show();
+
+            if(tasks!= null)
+                Collections.sort(tasks);
 
             adapter.submitList(tasks);
         });

@@ -4,20 +4,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
-import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -25,7 +18,6 @@ import com.todo.R;
 import com.todo.data.Task;
 import com.todo.databinding.FragmentTaskDetailBinding;
 import com.todo.notification.NotificationWorker;
-import com.todo.ui.tasks.TasksFragment;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -46,22 +38,7 @@ public class TaskDetailFragment extends Fragment {
         binding = FragmentTaskDetailBinding.inflate(getLayoutInflater());
 
         binding.addTaskButton.setOnClickListener(view -> addTask());
-//        View root = inflater.inflate(R.layout.fragment_task_detail, container, false);
-//
-//
-//        final Button addTaskButton = root.findViewById(R.id.add_task_button);
-//        addTaskButton.setOnClickListener(view -> {
-//            addTask(root);
-//        });
 
-
-        //final TextView textView = root.findViewById(R.id.text_task_detail);
-//        mTaskDetailViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-//            @Override
-//            public void onChanged(@Nullable String s) {
-//               // textView.setText(s);
-//            }
-//        });
         return binding.getRoot();
     }
 

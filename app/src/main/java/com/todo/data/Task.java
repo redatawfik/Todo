@@ -5,10 +5,12 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
+import com.todo.MainActivity;
+
 import java.util.Date;
 
 @Entity(tableName = "task_table")
-public class Task {
+public class Task implements Comparable<Task> {
 
     @NonNull
     @PrimaryKey(autoGenerate = true)
@@ -57,5 +59,18 @@ public class Task {
 
     public void setPriority(int priority) {
         this.priority = priority;
+    }
+
+    @Override
+    public int compareTo(Task task2) {
+        if(MainActivity.getSortOrder() == MainActivity.SortByEnum.DUE_DATE) {
+            if(dueDate == null) return 1;
+            if(task2.getDueDate() == null) return -1;
+
+            return dueDate.compareTo(task2.getDueDate());
+        }else {
+            return priority - task2.getPriority();
+        }
+
     }
 }
