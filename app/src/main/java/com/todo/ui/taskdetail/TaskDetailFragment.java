@@ -15,18 +15,28 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.todo.R;
 import com.todo.data.Task;
 import com.todo.databinding.FragmentTaskDetailBinding;
+import com.todo.notification.NotificationWorker;
 import com.todo.ui.tasks.TasksFragment;
 
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
+import static com.todo.Constants.KEY_TASK_TITLE;
 
 public class TaskDetailFragment extends Fragment {
 
     private TaskDetailViewModel mTaskDetailViewModel;
     private FragmentTaskDetailBinding binding;
+    private Date mDate;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -65,20 +75,48 @@ public class TaskDetailFragment extends Fragment {
             priority = 3;
         }
 
-        Date date = null;
+        mDate = null;
         if (binding.selectDateInput.isChecked()) {
-            date = new Date();
+            mDate = new Date();
             int hour = binding.datePicker.getHour();
             int minute = binding.datePicker.getMinute();
-            date.setHours(hour);
-            date.setMinutes(minute);
+            mDate.setHours(hour);
+            mDate.setMinutes(minute);
         }
 
-        Task task = new Task(title, date, priority);
+        Task task = new Task(title, mDate, priority);
         mTaskDetailViewModel.insertTask(task);
 
-       // action =
         Navigation.findNavController(binding.getRoot()).navigate(R.id.nav_tasks);
-        //Navigation.createNavigateOnClickListener(R.id.action, null);
+
+        scheduleReminder(title);
+        showSnackBar(title);
+    }
+
+    private void showSnackBar(String title) {
+        Snackbar snackbar = Snackbar
+                .make(binding.getRoot(), title, Snackbar.LENGTH_LONG);
+        snackbar.show();
+    }
+
+    private void scheduleReminder(String title) {
+        if (mDate == null) return;
+
+        long diffInMillies = Math.abs(mDate.getTime() - new Date().getTime());
+        long diffInMinutes = diffInMillies / (1000 * 60);
+
+        Data inputDate = new Data.Builder()
+                .putString(KEY_TASK_TITLE, title)
+                .build();
+
+        OneTimeWorkRequest request =
+                new OneTimeWorkRequest.Builder(NotificationWorker.class)
+                        .setInitialDelay(diffInMinutes, TimeUnit.MINUTES)
+                        .setInputData(inputDate)
+                        .build();
+
+        WorkManager
+                .getInstance(binding.getRoot().getContext())
+                .enqueue(request);
     }
 }
