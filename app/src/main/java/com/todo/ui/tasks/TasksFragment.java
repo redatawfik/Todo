@@ -7,7 +7,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -19,8 +18,6 @@ import com.google.android.material.snackbar.Snackbar;
 import com.todo.R;
 import com.todo.data.Task;
 import com.todo.databinding.FragmentTasksBinding;
-
-import java.util.Collections;
 
 public class TasksFragment extends Fragment implements TaskItemCallback {
 
@@ -36,21 +33,12 @@ public class TasksFragment extends Fragment implements TaskItemCallback {
         mTasksViewModel =
                 new ViewModelProvider(this).get(TasksViewModel.class);
 
-        //View root = inflater.inflate(R.layout.fragment_tasks, container, false);
-
         RecyclerView recyclerView = binding.tasksRecyclerView;
-        final TaskAdapter adapter = new TaskAdapter(new TaskAdapter.TaskDiff(), this);
+        final TaskAdapter adapter = new TaskAdapter(this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        mTasksViewModel.getAllTasks().observe(getViewLifecycleOwner(), tasks -> {
-            Toast.makeText(getContext(), tasks != null ? String.valueOf(tasks.size()) : "empty list", Toast.LENGTH_SHORT).show();
-
-            if (tasks != null)
-                Collections.sort(tasks);
-
-            adapter.submitList(tasks);
-        });
+        mTasksViewModel.getAllTasks().observe(getViewLifecycleOwner(), adapter::submitList);
         return binding.getRoot();
     }
 

@@ -7,19 +7,31 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.paging.PagedListAdapter;
 import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.todo.R;
 import com.todo.data.Task;
 
-public class TaskAdapter extends ListAdapter<Task, TaskAdapter.ViewHolder> {
+public class TaskAdapter extends PagedListAdapter<Task, TaskAdapter.ViewHolder> {
 
-    private TaskItemCallback itemCallback;
+    private static final DiffUtil.ItemCallback<Task> DIFF_CALLBACK =
+            new DiffUtil.ItemCallback<Task>() {
+                @Override
+                public boolean areItemsTheSame(@NonNull Task oldItem, @NonNull Task newItem) {
+                    return oldItem.getUid() == newItem.getUid();
+                }
 
-    protected TaskAdapter(@NonNull DiffUtil.ItemCallback<Task> diffCallback, TaskItemCallback itemCallback) {
-        super(diffCallback);
+                @Override
+                public boolean areContentsTheSame(@NonNull Task oldItem, @NonNull Task newItem) {
+                    return oldItem.equals(newItem);
+                }
+            };
+    private final TaskItemCallback itemCallback;
+
+    protected TaskAdapter(TaskItemCallback itemCallback) {
+        super(DIFF_CALLBACK);
         this.itemCallback = itemCallback;
     }
 
@@ -32,7 +44,8 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Task task = getItem(position);
-        holder.bind(task, itemCallback);
+        if (task != null)
+            holder.bind(task, itemCallback);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -69,21 +82,6 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.ViewHolder> {
             priority.setText(String.valueOf(task.getPriority()));
             title.setOnCheckedChangeListener((buttonView, isChecked) ->
                     itemCallback.checkBoxStatusChanged(isChecked, task));
-        }
-    }
-
-    static class TaskDiff extends DiffUtil.ItemCallback<Task> {
-
-        @Override
-        public boolean areItemsTheSame(@NonNull Task oldItem, @NonNull Task newItem) {
-            return oldItem == newItem;
-        }
-
-        @Override
-        public boolean areContentsTheSame(@NonNull Task oldItem, @NonNull Task newItem) {
-            return oldItem.getTitle().equals(newItem.getTitle()) &&
-                    oldItem.getDueDate().equals(newItem.getDueDate()) &&
-                    oldItem.getPriority() == newItem.getPriority();
         }
     }
 }

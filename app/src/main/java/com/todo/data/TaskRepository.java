@@ -3,21 +3,30 @@ package com.todo.data;
 import android.app.Application;
 
 import androidx.lifecycle.LiveData;
-
-import java.util.List;
+import androidx.paging.LivePagedListBuilder;
+import androidx.paging.PagedList;
 
 public class TaskRepository {
 
-    private TaskDao mTaskDao;
-    private LiveData<List<Task>> mAllTasks;
+    private final TaskDao mTaskDao;
+    private final LiveData<PagedList<Task>> mAllTasks;
 
     public TaskRepository(Application application) {
         TaskRoomDatabase db = TaskRoomDatabase.getInstance(application);
         mTaskDao = db.taskDao();
-        mAllTasks = mTaskDao.getAllTasks();
+        PagedList.Config myPagingConfig = new PagedList.Config.Builder()
+                .setPageSize(30)
+                .setInitialLoadSizeHint(50)
+                .setPrefetchDistance(150)
+                .setEnablePlaceholders(true)
+                .build();
+
+        mAllTasks = new LivePagedListBuilder<>(
+                mTaskDao.getAllTasks(), myPagingConfig).build();
+        //mAllTasks = mTaskDao.getAllTasks();
     }
 
-    public LiveData<List<Task>> getAllTasks() {
+    public LiveData<PagedList<Task>> getAllTasks() {
         return mAllTasks;
     }
 

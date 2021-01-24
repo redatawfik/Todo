@@ -1,6 +1,7 @@
 package com.todo.data;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
@@ -82,5 +83,15 @@ public class Task implements Comparable<Task> {
         } else {
             return priority - task2.getPriority();
         }
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj instanceof Task) {
+            Task task = (Task) obj;
+            return task.getUid() == uid && task.getTitle().equals(title) &&
+                    task.isCompleted() == completed && task.getDueDate() == dueDate;
+        }
+        return false;
     }
 }

@@ -4,16 +4,15 @@ import android.app.Application;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.paging.PagedList;
 
 import com.todo.data.Task;
 import com.todo.data.TaskRepository;
 
-import java.util.List;
-
 public class TasksViewModel extends AndroidViewModel {
 
-    private final LiveData<List<Task>> mAllTasks;
-    private TaskRepository mRepository;
+    private final LiveData<PagedList<Task>> mAllTasks;
+    private final TaskRepository mRepository;
 
     public TasksViewModel(Application application) {
         super(application);
@@ -21,7 +20,7 @@ public class TasksViewModel extends AndroidViewModel {
         mAllTasks = mRepository.getAllTasks();
     }
 
-    public LiveData<List<Task>> getAllTasks() {
+    public LiveData<PagedList<Task>> getAllTasks() {
         return mAllTasks;
     }
 
