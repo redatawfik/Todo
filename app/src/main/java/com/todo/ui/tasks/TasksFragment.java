@@ -11,13 +11,17 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavOptions;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.todo.R;
 import com.todo.data.Task;
 import com.todo.databinding.FragmentTasksBinding;
+import com.todo.ui.taskdetail.TaskDetailFragment;
 
 public class TasksFragment extends Fragment implements TaskItemCallback {
 
@@ -29,6 +33,14 @@ public class TasksFragment extends Fragment implements TaskItemCallback {
         setHasOptionsMenu(true);
 
         binding = FragmentTasksBinding.inflate(getLayoutInflater());
+
+        FloatingActionButton fab = binding.fab;
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Navigation.findNavController(binding.getRoot()).navigate(R.id.nav_task_detail);
+            }
+        });
 
         mTasksViewModel =
                 new ViewModelProvider(this).get(TasksViewModel.class);

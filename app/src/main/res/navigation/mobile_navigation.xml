@@ -9,7 +9,12 @@
         android:id="@+id/nav_tasks"
         android:name="com.todo.ui.tasks.TasksFragment"
         android:label="@string/menu_tasks"
-        tools:layout="@layout/fragment_tasks" />
+        tools:layout="@layout/fragment_tasks" >
+        <action
+            android:id="@+id/action_tasks_to_task_detail"
+            app:destination="@id/nav_task_detail"
+            app:popUpTo="@id/nav_task_detail" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_task_detail"

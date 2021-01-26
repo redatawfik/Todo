@@ -39,7 +39,7 @@ public class TaskRepository {
     }
 
     public void deleteAllTasks() {
-        TaskRoomDatabase.databaseWriteExecutor.execute(() -> mTaskDao.deleteAllTasks());
+        TaskRoomDatabase.databaseWriteExecutor.execute(mTaskDao::deleteAllTasks);
     }
 
     public void deleteTask(Task task) {
@@ -47,6 +47,6 @@ public class TaskRepository {
     }
 
     public void deleteCompletedTasks() {
-        TaskRoomDatabase.databaseWriteExecutor.execute(() -> mTaskDao.deleteCompletedTasks());
+        TaskRoomDatabase.databaseWriteExecutor.execute(mTaskDao::deleteCompletedTasks);
     }
 }
